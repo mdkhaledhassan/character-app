@@ -10,14 +10,18 @@ class CharactersRepo {
   static Server server = Server();
 
   static Future<CharacterResponse?> getCharacters(
-    int page, {
+    int page,
+    String search,
+    String status,
+    String species, {
     int retries = 5,
     int delay = 30,
   }) async {
     for (int i = 0; i < retries; i++) {
       try {
         final response = await server.getRequest(
-          endPoint: "${APIList.baseUrl}?page=$page",
+          endPoint:
+              "${APIList.baseUrl}?page=$page&name=$search&status=$status&species=$species",
         );
 
         if (response.statusCode == 200) {

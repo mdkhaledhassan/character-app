@@ -19,6 +19,12 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
   final characterController = Get.put(CharactersController());
 
   @override
+  void initState() {
+    favoriteController.page = 1;
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[100],

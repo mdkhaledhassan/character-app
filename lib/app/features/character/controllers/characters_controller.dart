@@ -16,6 +16,9 @@ class CharactersController extends GetxController {
   RxMap<int, CharacterOverride> overrides = <int, CharacterOverride>{}.obs;
   final favoriteIds = <int>{}.obs;
   late Stream<List<ConnectivityResult>> _connectivityStream;
+  final searchQuery = ''.obs;
+  final selectedStatus = ''.obs;
+  final selectedSpecies = ''.obs;
 
   int page = 1;
   int totalPages = 1;
@@ -31,7 +34,7 @@ class CharactersController extends GetxController {
   void onInit() {
     super.onInit();
 
-    _initialize();
+    initialize();
 
     scrollController.addListener(_scrollListener);
 
@@ -51,7 +54,7 @@ class CharactersController extends GetxController {
     favoriteIds.addAll(localService.getFavoriteIds());
   }
 
-  Future<void> _initialize() async {
+  Future<void> initialize() async {
     final isConnected = await hasInternet();
 
     print('has internet $isConnected');
@@ -98,6 +101,9 @@ class CharactersController extends GetxController {
     try {
       final response = await CharactersRepo.getCharacters(
         page,
+        searchQuery.value,
+        selectedStatus.value,
+        selectedSpecies.value,
         retries: 3,
         delay: 30,
       );
@@ -150,27 +156,46 @@ class CharactersController extends GetxController {
       return;
     }
 
-    final start = (localPage - 1) * perPage;
-    final end = start + perPage;
+    final filtered = all.where((c) {
+      final matchesSearch = searchQuery.value.isEmpty
+          ? true
+          : c.name.toLowerCase().contains(searchQuery.value.toLowerCase());
 
-    if (start >= all.length) {
+      final matchesStatus = selectedStatus.value.isEmpty
+          ? true
+          : c.status.toLowerCase() == selectedStatus.value.toLowerCase();
+
+      final matchesSpecies = selectedSpecies.value.isEmpty
+          ? true
+          : c.species.toLowerCase() == selectedSpecies.value.toLowerCase();
+
+      return matchesSearch && matchesStatus && matchesSpecies;
+    }).toList();
+
+    if (localPage == 1) {
+      characters.clear();
+      hasMoreData.value = true;
+    }
+
+    final start = (localPage - 1) * perPage;
+    final end = (start + perPage) > filtered.length
+        ? filtered.length
+        : (start + perPage);
+
+    if (start >= filtered.length) {
       hasMoreData.value = false;
       isLoading.value = false;
       return;
     }
 
-    final newData = all.sublist(start, end > all.length ? all.length : end);
+    final newData = filtered.sublist(start, end);
 
-    if (localPage == 1) {
-      characters.assignAll(newData);
-    } else {
-      characters.addAll(newData);
-    }
+    characters.addAll(newData);
 
-    localPage++;
-    hasMoreData.value = end < all.length;
+    hasMoreData.value = end < filtered.length;
+    if (hasMoreData.value) localPage++;
 
-    print("Local Page Loaded => $localPage");
+    print("Local Page Loaded => $localPage, items loaded: ${newData.length}");
 
     refreshMerged();
     isLoading.value = false;
@@ -234,6 +259,60 @@ class CharactersController extends GetxController {
     final all = localService.overridesBox.values.toList();
     for (var o in all) {
       overrides[o.id] = o;
+    }
+  }
+
+  void setSearch(String? query) async {
+    searchQuery.value = query ?? '';
+
+    final isConnected = await hasInternet();
+
+    if (isConnected) {
+      isOfflineMode.value = false;
+      page = 1;
+      hasMoreData.value = true;
+      await getCharacters();
+    } else {
+      isOfflineMode.value = true;
+      localPage = 1;
+      hasMoreData.value = true;
+      loadLocalData();
+    }
+  }
+
+  void setStatusFilter(String? status) async {
+    selectedStatus.value = status ?? '';
+
+    final isConnected = await hasInternet();
+
+    if (isConnected) {
+      isOfflineMode.value = false;
+      page = 1;
+      hasMoreData.value = true;
+      await getCharacters();
+    } else {
+      isOfflineMode.value = true;
+      localPage = 1;
+      hasMoreData.value = true;
+      loadLocalData();
+    }
+  }
+
+  void setSpeciesFilter(String? species) async {
+    selectedSpecies.value = species ?? '';
+
+    final isConnected = await hasInternet();
+
+    if (isConnected) {
+      isOfflineMode.value = false;
+      page = 1;
+      hasMoreData.value = true;
+      await getCharacters();
+    } else {
+      isOfflineMode.value = true;
+      localPage = 1;
+      hasMoreData.value = true;
+      loadLocalData();
     }
   }
 

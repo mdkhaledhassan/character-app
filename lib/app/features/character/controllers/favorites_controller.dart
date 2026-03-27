@@ -12,7 +12,7 @@ class FavoritesController extends GetxController {
   final scrollController = ScrollController();
 
   int page = 1;
-  final int perPage = 10;
+  final int perPage = 20;
 
   final hasMoreData = true.obs;
   final isLoading = false.obs;
