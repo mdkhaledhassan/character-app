@@ -2,16 +2,16 @@
 
 #  Clone project
 ```bash
-    git clone https://github.com/mdkhaledhassan/character-app
-    cd character-app
+git clone https://github.com/mdkhaledhassan/character-app
+cd character-app
 ```
 #  Install Dependencies
 ```bash
-    flutter pub get
+flutter pub get
 ```
 #  Run the Application
 ```bash
-    flutter run
+flutter run
 ```
 
 #  Requirements
