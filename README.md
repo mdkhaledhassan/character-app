@@ -83,6 +83,7 @@ This approach ensures data integrity and clean separation between API data and l
 - No unit/widget tests included
 
 #  YouTube Explanation Video
-- [Video Link](https://youtu.be/JZBQm0aiwd4)
+- [Video Link](https://youtu.be/JZBQm0aiwd4) (Youtube)
+- [Video Link](https://drive.google.com/file/d/1c8GDKjvBEYPuIZ6Z7NfDgynxh__FFGMI/view?usp=sharing) (Google Drive)
 
 #  Thank You
