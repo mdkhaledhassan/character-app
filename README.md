@@ -1,13 +1,18 @@
 #  Rick and Morty Character Explorer (Flutter)
 
 #  Clone project
-- git clone https://github.com/mdkhaledhassan/character-app
-- cd character-app
-
+```bash
+    git clone https://github.com/mdkhaledhassan/character-app
+    cd character-app
+```
 #  Install Dependencies
-flutter pub get
+```bash
+    flutter pub get
+```
 #  Run the Application
-flutter run
+```bash
+    flutter run
+```
 
 #  Requirements
 - Flutter SDK (3.x recommended)
@@ -78,6 +83,6 @@ This approach ensures data integrity and clean separation between API data and l
 - No unit/widget tests included
 
 #  YouTube Explanation Video
-- [Video Link](https://docs.flutter.dev/get-started/learn-flutter)
+- [Video Link](https://youtu.be/JZBQm0aiwd4)
 
 #  Thank You
