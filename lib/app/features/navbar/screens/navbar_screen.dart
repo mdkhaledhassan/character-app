@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
+import '../../character/controllers/characters_controller.dart';
 import '../../character/screens/characters_screen.dart';
 import '../../character/screens/favorites_screen.dart';
 
@@ -36,6 +38,9 @@ class _NavbarScreenState extends State<NavbarScreen> {
             setState(() {
               selectedIndex = index;
             });
+            if (index == 0) {
+              Get.find<CharactersController>().refreshCharacters();
+            }
           },
 
           items: const [

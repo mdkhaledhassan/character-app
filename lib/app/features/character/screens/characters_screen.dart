@@ -1,9 +1,8 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shimmer/shimmer.dart';
+import '../../../../routes/app_routes.dart';
 import '../controllers/characters_controller.dart';
-import 'character_details_screen.dart';
+import '../widgets/character_widget.dart';
 
 class CharactersScreen extends StatefulWidget {
   const CharactersScreen({super.key});
@@ -17,11 +16,10 @@ class _CharactersScreenState extends State<CharactersScreen> {
 
   @override
   void initState() {
-    characterController.page = 1;
-    characterController.localPage = 1;
     characterController.searchQuery.value = '';
     characterController.selectedSpecies.value = '';
     characterController.selectedStatus.value = '';
+    characterController.refreshCharacters();
     super.initState();
   }
 
@@ -190,9 +188,7 @@ class _CharactersScreenState extends State<CharactersScreen> {
 
               return RefreshIndicator(
                 onRefresh: () async {
-                  characterController.page = 1;
-                  characterController.localPage = 1;
-                  characterController.onInit();
+                  characterController.refreshCharacters();
                 },
                 child: ListView.builder(
                   controller: characterController.scrollController,
@@ -213,82 +209,16 @@ class _CharactersScreenState extends State<CharactersScreen> {
 
                     return GestureDetector(
                       onTap: () {
-                        Get.to(
-                          () => CharacterDetailsScreen(character: char),
+                        Get.toNamed(
+                          Routes.details,
+                          arguments: char,
                         )?.then((_) => characterController.refreshMerged());
                       },
                       child: Padding(
                         padding: const EdgeInsets.only(bottom: 12),
-                        child: Container(
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(14),
-                            border: Border.all(color: Colors.grey.shade300),
-                          ),
-                          child: Row(
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: CachedNetworkImage(
-                                  imageUrl: char.image,
-                                  height: 70,
-                                  width: 70,
-                                  fit: BoxFit.cover,
-                                  cacheKey: char.image,
-                                  useOldImageOnUrlChange: true,
-                                  placeholder: (context, url) =>
-                                      Shimmer.fromColors(
-                                        baseColor: Colors.grey[300]!,
-                                        highlightColor: Colors.grey[100]!,
-                                        child: Container(
-                                          height: 70,
-                                          width: 70,
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                  errorWidget: (context, url, error) =>
-                                      const Icon(Icons.person, size: 40),
-                                ),
-                              ),
-                              const SizedBox(width: 14),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      char.name,
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 6),
-                                    Text(
-                                      "${char.species} - ${char.status}",
-                                      style: const TextStyle(
-                                        color: Colors.grey,
-                                        fontSize: 13,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              Obx(
-                                () => IconButton(
-                                  icon: Icon(
-                                    characterController.isFavorite(char.id)
-                                        ? Icons.favorite
-                                        : Icons.favorite_border,
-                                    color: Colors.red,
-                                  ),
-                                  onPressed: () => characterController
-                                      .toggleFavorite(char.id),
-                                ),
-                              ),
-                            ],
-                          ),
+                        child: CharacterWidget(
+                          char: char,
+                          characterController: characterController,
                         ),
                       ),
                     );

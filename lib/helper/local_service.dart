@@ -33,4 +33,12 @@ class LocalService {
   void saveOverride(CharacterOverride override) {
     overridesBox.put(override.id, override);
   }
+
+  bool isCharacterEdited(int id) {
+    return overridesBox.containsKey(id);
+  }
+
+  void removeOverride(int id) {
+    overridesBox.delete(id);
+  }
 }

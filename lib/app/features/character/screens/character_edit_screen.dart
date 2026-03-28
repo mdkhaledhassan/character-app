@@ -97,17 +97,7 @@ class _CharacterEditScreenState extends State<CharacterEditScreen> {
                   }
                 },
               ),
-              TextFieldWidget(
-                label: "Type",
-                controller: typeController,
-                validator: (p0) {
-                  if (p0!.isEmpty) {
-                    return 'Enter type';
-                  } else {
-                    return null;
-                  }
-                },
-              ),
+              TextFieldWidget(label: "Type", controller: typeController),
               TextFieldWidget(
                 label: "Gender",
                 controller: genderController,

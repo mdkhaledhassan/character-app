@@ -4,7 +4,8 @@ import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'app/data/models/character_model.dart';
 import 'app/data/models/character_override_model.dart';
-import 'app/features/navbar/screens/navbar_screen.dart';
+import 'routes/app_pages.dart';
+import 'routes/app_routes.dart';
 import 'utils/constants.dart';
 
 void main() async {
@@ -32,7 +33,8 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: AppConstants.appName,
-      home: NavbarScreen(),
+      initialRoute: Routes.initial,
+      getPages: AppPages.routes,
     );
   }
 }

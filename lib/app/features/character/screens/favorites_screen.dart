@@ -1,10 +1,8 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shimmer/shimmer.dart';
-
 import '../controllers/characters_controller.dart';
 import '../controllers/favorites_controller.dart';
+import '../widgets/favirite_widget.dart';
 import 'character_details_screen.dart';
 
 class FavoritesScreen extends StatefulWidget {
@@ -72,76 +70,9 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
               },
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 12),
-                child: Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: Colors.grey.shade300),
-                  ),
-                  child: Row(
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: CachedNetworkImage(
-                          imageUrl: char.image,
-                          height: 70,
-                          width: 70,
-                          fit: BoxFit.cover,
-                          cacheKey: char.image,
-                          placeholder: (context, url) => Shimmer.fromColors(
-                            baseColor: Colors.grey[300]!,
-                            highlightColor: Colors.grey[100]!,
-                            child: Container(
-                              height: 70,
-                              width: 70,
-                              color: Colors.grey,
-                            ),
-                          ),
-                          errorWidget: (context, url, error) =>
-                              const Icon(Icons.error),
-                        ),
-                      ),
-
-                      const SizedBox(width: 14),
-
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              char.name,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(height: 6),
-                            Text(
-                              "${char.species} - ${char.status}",
-                              style: const TextStyle(
-                                color: Colors.grey,
-                                fontSize: 13,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      Obx(
-                        () => IconButton(
-                          icon: Icon(
-                            characterController.isFavorite(char.id)
-                                ? Icons.favorite
-                                : Icons.favorite_border,
-                            color: Colors.red,
-                          ),
-                          onPressed: () =>
-                              characterController.toggleFavorite(char.id),
-                        ),
-                      ),
-                    ],
-                  ),
+                child: FaviriteWidget(
+                  char: char,
+                  characterController: characterController,
                 ),
               ),
             );

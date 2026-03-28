@@ -1,11 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../../routes/app_routes.dart';
 import '../../../data/models/character_model.dart';
-import '../../../data/models/character_override_model.dart';
 import '../controllers/characters_controller.dart';
 import '../widgets/info_widget.dart';
-import 'character_edit_screen.dart';
 
 class CharacterDetailsScreen extends StatelessWidget {
   final CharacterModel character;
@@ -83,9 +82,11 @@ class CharacterDetailsScreen extends StatelessWidget {
               }),
               GestureDetector(
                 onTap: () async {
-                  final override = await Get.to<CharacterOverride>(
-                    () => CharacterEditScreen(character: character),
+                  final override = await Get.toNamed(
+                    Routes.eidt,
+                    arguments: character,
                   );
+
                   if (override != null) {
                     controller.saveOverride(override);
                   }

@@ -40,14 +40,14 @@ class CharactersController extends GetxController {
 
     _connectivityStream = Connectivity().onConnectivityChanged;
 
-    _connectivityStream.listen((results) {
+    _connectivityStream.listen((results) async {
       final isConnected = results.any(
         (result) => result != ConnectivityResult.none,
       );
 
       if (isConnected && isOfflineMode.value) {
         isOfflineMode.value = false;
-        getCharacters();
+        await getCharacters();
       }
     });
 
@@ -61,7 +61,7 @@ class CharactersController extends GetxController {
 
     if (isConnected) {
       isOfflineMode.value = false;
-      getCharacters();
+      await getCharacters();
     } else {
       isOfflineMode.value = true;
 
@@ -73,6 +73,15 @@ class CharactersController extends GetxController {
         hasMoreData.value = false;
       }
     }
+  }
+
+  Future<void> refreshCharacters() async {
+    characters.clear();
+    page = 1;
+    localPage = 1;
+    hasMoreData.value = true;
+
+    await initialize();
   }
 
   Future<bool> hasInternet() async {
@@ -252,7 +261,9 @@ class CharactersController extends GetxController {
     localService.saveOverride(override);
     overrides[override.id] = override;
     refreshMerged();
-    Get.find<FavoritesController>().refreshMerged();
+    if (Get.isRegistered<FavoritesController>()) {
+      Get.find<FavoritesController>().refreshMerged();
+    }
   }
 
   void loadOverrides() {
@@ -313,6 +324,33 @@ class CharactersController extends GetxController {
       localPage = 1;
       hasMoreData.value = true;
       loadLocalData();
+    }
+  }
+
+  bool isEdited(int id) {
+    return localService.isCharacterEdited(id);
+  }
+
+  void resetCharacter(int id) async {
+    localService.removeOverride(id);
+
+    final isConnected = await hasInternet();
+
+    if (isConnected) {
+      isOfflineMode.value = false;
+      page = 1;
+      hasMoreData.value = true;
+      await getCharacters();
+    } else {
+      isOfflineMode.value = true;
+      localPage = 1;
+      hasMoreData.value = true;
+      loadLocalData();
+    }
+
+    refreshMerged();
+    if (Get.isRegistered<FavoritesController>()) {
+      Get.find<FavoritesController>().refreshMerged();
     }
   }
 
