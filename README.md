@@ -1,8 +1,8 @@
 #  Rick and Morty Character Explorer (Flutter)
 
 #  Clone project
-git clone https://github.com/mdkhaledhassan/character-app
-cd character-app
+- git clone https://github.com/mdkhaledhassan/character-app
+- cd character-app
 
 #  Install Dependencies
 flutter pub get

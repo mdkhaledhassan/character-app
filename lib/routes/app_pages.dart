@@ -28,8 +28,8 @@ class AppPages {
     GetPage(
       name: Routes.details,
       page: () {
-        final controller = Get.arguments as CharacterModel;
-        return CharacterDetailsScreen(character: controller);
+        final character = Get.arguments as CharacterModel;
+        return CharacterDetailsScreen(characterId: character.id);
       },
       transition: Transition.fade,
       binding: CharactersBinding(),
@@ -38,8 +38,8 @@ class AppPages {
     GetPage(
       name: Routes.eidt,
       page: () {
-        final controller = Get.arguments as CharacterModel;
-        return CharacterEditScreen(character: controller);
+        final character = Get.arguments as CharacterModel;
+        return CharacterEditScreen(character: character);
       },
       transition: Transition.fade,
       binding: CharactersBinding(),

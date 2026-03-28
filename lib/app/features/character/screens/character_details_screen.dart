@@ -2,15 +2,14 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../routes/app_routes.dart';
-import '../../../data/models/character_model.dart';
 import '../controllers/characters_controller.dart';
 import '../widgets/info_widget.dart';
 
 class CharacterDetailsScreen extends StatelessWidget {
-  final CharacterModel character;
+  final int characterId;
+  CharacterDetailsScreen({super.key, required this.characterId});
 
-  CharacterDetailsScreen({super.key, required this.character});
-  final controller = Get.find<CharactersController>();
+  final characterController = Get.find<CharactersController>();
 
   @override
   Widget build(BuildContext context) {
@@ -20,20 +19,24 @@ class CharacterDetailsScreen extends StatelessWidget {
         backgroundColor: Colors.white,
         surfaceTintColor: Colors.white,
         title: Obx(() {
-          final merged = controller.getMergedCharacter(character);
+          final merged = characterController.getMergedCharacterById(
+            characterId,
+          );
           return Text(merged.name);
         }),
         actions: [
           Obx(() {
-            final merged = controller.getMergedCharacter(character);
+            final merged = characterController.getMergedCharacterById(
+              characterId,
+            );
             return IconButton(
               icon: Icon(
-                controller.isFavorite(merged.id)
+                characterController.isFavorite(merged.id)
                     ? Icons.favorite
                     : Icons.favorite_border,
                 color: Colors.red,
               ),
-              onPressed: () => controller.toggleFavorite(merged.id),
+              onPressed: () => characterController.toggleFavorite(merged.id),
             );
           }),
         ],
@@ -41,30 +44,32 @@ class CharacterDetailsScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Column(
-            children: [
-              Hero(
-                tag: character.id,
-                child: CachedNetworkImage(
-                  imageUrl: character.image,
-                  height: 300,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                  cacheKey: character.image,
-                  useOldImageOnUrlChange: true,
-                  placeholder: (context, url) => Container(
+          child: Obx(() {
+            final merged = characterController.getMergedCharacterById(
+              characterId,
+            );
+            return Column(
+              children: [
+                Hero(
+                  tag: merged.id,
+                  child: CachedNetworkImage(
+                    imageUrl: merged.image,
                     height: 300,
                     width: double.infinity,
-                    color: Colors.grey,
+                    fit: BoxFit.cover,
+                    cacheKey: merged.image,
+                    useOldImageOnUrlChange: true,
+                    placeholder: (context, url) => Container(
+                      height: 300,
+                      width: double.infinity,
+                      color: Colors.grey,
+                    ),
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.person, size: 40),
                   ),
-                  errorWidget: (context, url, error) =>
-                      const Icon(Icons.person, size: 40),
                 ),
-              ),
-              const SizedBox(height: 20),
-              Obx(() {
-                final merged = controller.getMergedCharacter(character);
-                return Column(
+                const SizedBox(height: 20),
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     InfoWidget(title: "Name", value: merged.name),
@@ -78,30 +83,28 @@ class CharacterDetailsScreen extends StatelessWidget {
                     InfoWidget(title: "Origin", value: merged.originName),
                     InfoWidget(title: "Location", value: merged.locationName),
                   ],
-                );
-              }),
-              GestureDetector(
-                onTap: () async {
-                  final override = await Get.toNamed(
-                    Routes.eidt,
-                    arguments: character,
-                  );
+                ),
+                const SizedBox(height: 20),
+                GestureDetector(
+                  onTap: () async {
+                    final override = await Get.toNamed(
+                      Routes.eidt,
+                      arguments: merged,
+                    );
 
-                  if (override != null) {
-                    controller.saveOverride(override);
-                  }
-                },
-                child: Container(
-                  height: 48,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Colors.green,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.all(12),
-                    child: Center(
-                      child: const Text(
+                    if (override != null) {
+                      characterController.saveOverride(override);
+                    }
+                  },
+                  child: Container(
+                    height: 48,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.green,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Center(
+                      child: Text(
                         "Edit Character",
                         style: TextStyle(
                           color: Colors.white,
@@ -112,10 +115,10 @@ class CharacterDetailsScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 30),
-            ],
-          ),
+                const SizedBox(height: 30),
+              ],
+            );
+          }),
         ),
       ),
     );

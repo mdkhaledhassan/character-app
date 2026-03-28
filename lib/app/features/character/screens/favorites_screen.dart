@@ -65,7 +65,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
             return GestureDetector(
               onTap: () {
                 Get.to(
-                  () => CharacterDetailsScreen(character: char),
+                  () => CharacterDetailsScreen(characterId: char.id),
                 )?.then((_) => characterController.refreshMerged());
               },
               child: Padding(

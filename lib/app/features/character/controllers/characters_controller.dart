@@ -354,6 +354,13 @@ class CharactersController extends GetxController {
     }
   }
 
+  CharacterModel getMergedCharacterById(int id) {
+    return mergedCharacters.firstWhere(
+      (c) => c.id == id,
+      orElse: () => characters.firstWhere((c) => c.id == id),
+    );
+  }
+
   @override
   void onClose() {
     scrollController.dispose();
